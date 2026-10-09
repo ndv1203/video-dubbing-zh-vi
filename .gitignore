@@ -1,0 +1,48 @@
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Runtime data
+storage/*
+!storage/uploads/
+!storage/work/
+!storage/outputs/
+storage/uploads/*
+storage/work/*
+storage/outputs/*
+
+# Model weights and caches
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+model_cache/
+hf_cache/
+
+# OS
+.DS_Store
+Thumbs.db
