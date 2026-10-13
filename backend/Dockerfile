@@ -8,11 +8,14 @@ WORKDIR /app
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        curl \
+       ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY alembic.ini .
+COPY migrations ./migrations
 COPY app ./app
 
 EXPOSE 8000

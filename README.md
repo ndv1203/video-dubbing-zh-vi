@@ -21,8 +21,9 @@ a Vietnamese-dubbed video with Vietnamese subtitles burned in.
 - [x] Git initialization
 - [x] Environment template
 - [x] PostgreSQL and Redis Compose services
-- [ ] FastAPI and database models
-- [ ] Celery worker
+- [x] FastAPI and database models
+- [x] Celery worker
+- [ ] Job upload and status API
 - [ ] AI pipeline and FFmpeg integration
 - [ ] Frontend
 - [ ] Nginx and VPS deployment

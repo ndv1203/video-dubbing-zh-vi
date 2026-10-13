@@ -6,7 +6,7 @@ from app.core.config import settings
 celery_app = Celery(
     "video_dubbing",
     broker=settings.redis_url,
-    backend="redis://redis:6379/1",
+    backend=settings.celery_result_backend,
     include=["app.worker.tasks"],
 )
 

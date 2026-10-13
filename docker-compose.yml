@@ -35,6 +35,7 @@ services:
       - backend_net
     volumes:
       - ./backend:/app
+      - ./storage:/data/storage
     command:
       [
         "uvicorn",
@@ -73,6 +74,7 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
+      - ./storage:/data/storage
     command:
       [
         "celery",

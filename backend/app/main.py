@@ -1,7 +1,10 @@
 from fastapi import FastAPI, HTTPException
+from redis import Redis
+from redis.exceptions import RedisError
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.core.config import settings
 from app.db.session import engine
 
 app = FastAPI(
@@ -30,7 +33,23 @@ def health():
             detail="Database unavailable",
         ) from exc
 
+    redis_client = Redis.from_url(
+        settings.redis_url,
+        socket_connect_timeout=2,
+        socket_timeout=2,
+    )
+    try:
+        redis_client.ping()
+    except RedisError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="Redis unavailable",
+        ) from exc
+    finally:
+        redis_client.close()
+
     return {
         "status": "ok",
         "database": "connected",
+        "redis": "connected",
     }
