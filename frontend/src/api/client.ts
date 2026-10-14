@@ -76,3 +76,7 @@ export function getVideoStreamUrl(jobId: string, kind: 'output' | 'input' = 'out
   return `${API_BASE}/jobs/${jobId}/stream?kind=${kind}`;
 }
 
+export function getSubtitlesUrl(jobId: string): string {
+  return `${API_BASE}/jobs/${jobId}/subtitles`;
+}
+

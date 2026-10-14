@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Download, Film, RefreshCw } from 'lucide-react';
+import { Download, FileText, Film, RefreshCw } from 'lucide-react';
 import { JobDetail } from '../types/job';
-import { getVideoStreamUrl } from '../api/client';
+import { getSubtitlesUrl, getVideoStreamUrl } from '../api/client';
 
 interface VideoPlayerProps {
   job: JobDetail;
@@ -105,14 +105,24 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ job }) => {
 
         <div className="flex items-center space-x-2">
           {isCompleted && (
-            <a
-              href={getVideoStreamUrl(job.id, 'output')}
-              download={`dubbed_${job.original_filename}`}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl flex items-center space-x-1.5 shadow-xs transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              <span>Tải video lồng tiếng (MP4)</span>
-            </a>
+            <>
+              <a
+                href={getVideoStreamUrl(job.id, 'output')}
+                download={`dubbed_${job.original_filename}`}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl flex items-center space-x-1.5 shadow-xs transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                <span>Tải video lồng tiếng (MP4)</span>
+              </a>
+              <a
+                href={getSubtitlesUrl(job.id)}
+                download={`subtitles_${job.original_filename.replace(/\.[^/.]+$/, "")}.srt`}
+                className="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium rounded-xl flex items-center space-x-1.5 transition-colors border border-indigo-200/60"
+              >
+                <FileText className="w-4 h-4 text-indigo-600" />
+                <span>Tải phụ đề (SRT)</span>
+              </a>
+            </>
           )}
           <a
             href={getVideoStreamUrl(job.id, 'input')}

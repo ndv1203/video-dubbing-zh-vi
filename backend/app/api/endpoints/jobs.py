@@ -139,8 +139,9 @@ def get_job(
     return job
 
 
-@router.get(
+@router.api_route(
     "/{job_id}/stream",
+    methods=["GET", "HEAD"],
     summary="Stream video (input or rendered output)",
 )
 def stream_job_video(
@@ -170,5 +171,33 @@ def stream_job_video(
         path=target_path,
         media_type="video/mp4",
         filename=Path(target_path).name,
+    )
+
+
+@router.get(
+    "/{job_id}/subtitles",
+    summary="Get job subtitles (.srt)",
+)
+def get_job_subtitles(
+    job_id: UUID,
+    db: Session = Depends(get_db),
+):
+    job = db.get(ProcessingJob, job_id)
+    if job is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Job không tồn tại",
+        )
+
+    if not job.subtitle_path or not os.path.exists(job.subtitle_path):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Phụ đề chưa sẵn sàng hoặc không tồn tại",
+        )
+
+    return FileResponse(
+        path=job.subtitle_path,
+        media_type="text/plain; charset=utf-8",
+        filename=Path(job.subtitle_path).name,
     )
 
