@@ -1,10 +1,37 @@
+import logging
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 from uuid import UUID
 
+from app.core.config import settings
 from app.db.session import SessionLocal
 from app.models.job import ProcessingJob
 from app.worker.celery_app import celery_app
+
+logger = logging.getLogger(__name__)
+
+_translator_instance = None
+
+
+def get_translator():
+    global _translator_instance
+    if _translator_instance is None:
+        try:
+            from app.ml.translator import Translator
+
+            model_dir = Path(settings.models_root) / "translator_zh_vi"
+            logger.info(f"Loading translator model from {model_dir}...")
+            _translator_instance = Translator.load_from_dir(
+                model_dir=model_dir,
+                checkpoint_name="best.pt",
+                device="cpu",
+            )
+            logger.info("Translator model loaded successfully.")
+        except Exception as e:
+            logger.warning(f"Could not load translator model: {e}")
+            return None
+    return _translator_instance
 
 
 @celery_app.task(name="app.worker.tasks.ping")
@@ -56,8 +83,19 @@ def process_demo_job(self, job_id: str):
                 job.progress = progress_value
                 db.commit()
 
-            # Chỉ mô phỏng công việc, chưa chạy model thật.
-            time.sleep(2)
+            if stage_name == "translation":
+                try:
+                    translator = get_translator()
+                    if translator is not None:
+                        sample_trans = translator.translate("你好，世界！")
+                        logger.info(f"Translator test output: {sample_trans}")
+                    else:
+                        logger.info("Running in demo/test mode (translator not loaded in worker container).")
+                except Exception as e:
+                    logger.warning(f"Could not run translator model: {e}")
+                time.sleep(2)
+            else:
+                time.sleep(2)
 
         with SessionLocal() as db:
             job = db.get(ProcessingJob, job_uuid)

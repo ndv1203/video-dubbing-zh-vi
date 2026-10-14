@@ -23,9 +23,9 @@ a Vietnamese-dubbed video with Vietnamese subtitles burned in.
 - [x] PostgreSQL and Redis Compose services
 - [x] FastAPI and database models
 - [x] Celery worker
-- [ ] Job upload and status API
+- [x] Job upload and status API
 - [ ] AI pipeline and FFmpeg integration
-- [ ] Frontend
+- [x] Frontend
 - [ ] Nginx and VPS deployment
 
 ## Initial setup
